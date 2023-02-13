@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import * as abcjs from "abcjs";
-import jsPDF from "jspdf";
+import PDFDocument from "jspdf";
 import "./App.css";
-import FileSaver from "file-saver";
+import { saveAs } from "file-saver";
 
 const colors = [
   "#ff0000",
@@ -20,11 +20,9 @@ function App() {
   const abcContainerRef = useRef(null);
 
   useEffect(() => {
-    fetch("sample-tune.json")
-      .then((res) => res.json())
-      .then((data) => {
-        setAbcNotation(data.abcNotation);
-      });
+    setAbcNotation(
+      "X:1\nT:Hot Cross Buns\nM:4/4\nK:C\nC C C\nG G G\nA A A\nG\nF F F\nE E E\nD D D\nC"
+    );
   }, []);
 
   const renderAbc = () => {
@@ -32,21 +30,25 @@ function App() {
   };
 
   const handleDownloadPdf = () => {
-    const doc = new jsPDF();
+    const doc = new PDFDocument();
+    let octave = 0;
 
     let x = 50;
     let y = 50;
-    let line = 0;
 
     abcNotation.split("\n").forEach((note) => {
-      doc.setTextColor(colors[line % 8]);
-      doc.text(note, x, y, { underline: true });
+      doc.fillColor(colors[octave % 8]).text(note, x, y);
       y += 20;
-      line++;
+
+      if (note.includes("'")) {
+        octave++;
+      }
     });
 
-    const pdfBlob = doc.output("blob");
-    FileSaver.saveAs(pdfBlob, "abcNotation.pdf");
+    doc.output("dataurlnewwindow");
+    const pdfData = doc.output();
+    const blob = new Blob([pdfData], { type: "application/pdf" });
+    saveAs(blob, "hotCrossBuns.pdf");
   };
 
   return (
