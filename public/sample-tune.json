@@ -1,0 +1,33 @@
+{
+  "abcNotation": "X:1\nT:Sample Tune\nM:4/4\nL:1/4\nK:C\nC D E F | G A B c",
+  "colors": [
+    {
+      "note": "C",
+      "color": "red"
+    },
+    {
+      "note": "D",
+      "color": "blue"
+    },
+    {
+      "note": "E",
+      "color": "green"
+    },
+    {
+      "note": "F",
+      "color": "yellow"
+    },
+    {
+      "note": "G",
+      "color": "purple"
+    },
+    {
+      "note": "A",
+      "color": "pink"
+    },
+    {
+      "note": "B",
+      "color": "orange"
+    }
+  ]
+}
