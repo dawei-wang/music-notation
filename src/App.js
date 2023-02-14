@@ -21,7 +21,7 @@ function App() {
 
   useEffect(() => {
     setAbcNotation(
-      "X:1\nT:Twinkle Twinkle Little Star\nM:4/4\nK:C\nC C C\nG G G\nA A A\nG\nF F F\nE E E\nD D D\nC"
+      "X:1\nT:Greensleeves\nM:4/4\nK:C\nC C G G\nA7 A7 D D\nE7 E7 A A\nD D G G\nC C G G\nA7 A7 D D\nE7 E7 A A\nD D G G"
     );
   }, []);
 
@@ -31,23 +31,23 @@ function App() {
 
   const handleDownloadPdf = () => {
     const doc = new PDFDocument();
-    let octave = 0;
+    let colorIndex = 0;
 
     let x = 50;
     let y = 50;
 
     abcNotation.split("\n").forEach((note) => {
       if (note.includes("'")) {
-        octave++;
+        colorIndex++;
       }
-      doc.setTextColor(colors[octave % 8]);
+      doc.setTextColor(colors[colorIndex % 8]);
       doc.text(note, x, y);
       y += 20;
     });
 
     const pdfData = doc.output();
     const blob = new Blob([pdfData], { type: "application/pdf" });
-    saveAs(blob, "twinkleTwinkleLitleStar.pdf");
+    saveAs(blob, "greensleeves.pdf");
   };
 
   return (
