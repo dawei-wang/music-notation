@@ -21,7 +21,7 @@ function App() {
 
   useEffect(() => {
     setAbcNotation(
-      "X:1\nT:Hot Cross Buns\nM:4/4\nK:C\nC C C\nG G G\nA A A\nG\nF F F\nE E E\nD D D\nC"
+      "X:1\nT:Twinkle Twinkle Little Star\nM:4/4\nK:C\nC C C\nG G G\nA A A\nG\nF F F\nE E E\nD D D\nC"
     );
   }, []);
 
@@ -37,18 +37,17 @@ function App() {
     let y = 50;
 
     abcNotation.split("\n").forEach((note) => {
-      doc.fillColor(colors[octave % 8]).text(note, x, y);
-      y += 20;
-
       if (note.includes("'")) {
         octave++;
       }
+      doc.setTextColor(colors[octave % 8]);
+      doc.text(note, x, y);
+      y += 20;
     });
 
-    doc.output("dataurlnewwindow");
     const pdfData = doc.output();
     const blob = new Blob([pdfData], { type: "application/pdf" });
-    saveAs(blob, "hotCrossBuns.pdf");
+    saveAs(blob, "twinkleTwinkleLitleStar.pdf");
   };
 
   return (
