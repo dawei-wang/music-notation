@@ -3,28 +3,25 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
 const COLORS = {
-  e: "#ff6666",
-  f: "#ff9966",
-  g: "#ffff66",
-  a: "#99ff99",
-  b: "#66b3ff",
-  c: "#d966ff",
-  d: "#ff66b3",
+  2: "#FBB4AE",
+  3: "#B3CDE3",
+  4: "#CCEBC5",
+  5: "#DECBE4",
+  6: "#FED9A6",
+  7: "#FFFFCC",
+  8: "#E5D8BD",
+  9: "#FDDAEC",
 };
 
-const song = "e4 d4 c4 d4 e4 e4 e4 g4 g4 g4 g4 e4 e4 e4 e4 d4 d4 e4 d4 c4";
+const song =
+  "e4 d4 c4 d4 e4 e4 e4 d4 d4 d4 e4 g4 g4 e4 d4 c4 d4 e4 e4 e4 e4 d4 d4 e4 d4 c4";
 
-const underlinedNotes = song.split(" ").map((note) => {
+const coloredNotes = song.split(" ").map((note) => {
   const octave = note.charAt(note.length - 1);
-  const color = COLORS[note.charAt(0)];
+  const color = COLORS[octave];
   const letterNote = note.slice(0, -1);
-  const underlinedNote = letterNote
-    .split("")
-    .map((c) => `${c}_`)
-    .join("");
-
   return {
-    note: underlinedNote.slice(0, -1),
+    note: letterNote,
     color,
   };
 });
@@ -44,8 +41,8 @@ function App() {
     <div>
       <div id="pdf-content">
         <h2>Greensleeves</h2>
-        {underlinedNotes.map(({ note, color }, i) => (
-          <span key={i} style={{ color, textDecoration: "underline" }}>
+        {coloredNotes.map(({ note, color }, i) => (
+          <span key={i} style={{ color }}>
             {note}{" "}
           </span>
         ))}
