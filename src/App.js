@@ -1,19 +1,19 @@
-import React, { useState } from "react";
+import React from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import { renderToSvg } from "abcjs";
+import { schemeSet1 } from "d3-scale-chromatic";
 
 const COLORS = {
-  1: "#ff6666",
-  2: "#ff9966",
-  3: "#ffff66",
-  4: "#99ff99",
-  5: "#66b3ff",
-  6: "#d966ff",
+  1: schemeSet1[0],
+  2: schemeSet1[1],
+  3: schemeSet1[2],
+  4: schemeSet1[3],
+  5: schemeSet1[4],
+  6: schemeSet1[5],
 };
 
 const song =
-  "c4 c4 g4 g4 a4 a4 g4 e4 e4 d4 d4 c4 g4 g4 f4 f4 e4 e4 d4 g4 g4 f4 f4 e4 e4 d4 c4 c4 g4 g4 a4 a4 g4 e4 e4 d4 d4 c4";
+  "G3 G3 G3 D4 G4 F#4 E4 D4 D4 D4 G4 G4 F#4 F#4 E4 E4 D4 G4 D4 G4 F#4 E4 D4";
 
 const underlinedNotes = song.split(" ").map((note) => {
   const octave = note.charAt(note.length - 1);
@@ -36,27 +36,15 @@ function downloadPdf() {
     const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF("l", "pt", [canvas.width, canvas.height]);
     pdf.addImage(imgData, "PNG", 0, 0);
-    pdf.save("twinkle_twinkle_little_star.pdf");
+    pdf.save("the_planets_jupiter.pdf");
   });
-}
-
-function downloadAbc() {
-  const svgString = renderToSvg(song, {});
-  const blob = new Blob([svgString], { type: "image/svg+xml" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "twinkle_twinkle_little_star.abc";
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
 }
 
 function App() {
   return (
     <div>
       <div id="pdf-content">
-        <h2>Twinkle, Twinkle, Little Star</h2>
+        <h2>The Planets - Jupiter</h2>
         {underlinedNotes.map(({ note, color }, i) => (
           <span key={i} style={{ color, textDecoration: "underline" }}>
             {note}{" "}
@@ -64,7 +52,6 @@ function App() {
         ))}
       </div>
       <button onClick={downloadPdf}>Download PDF</button>
-      <button onClick={downloadAbc}>Download ABC</button>
     </div>
   );
 }
