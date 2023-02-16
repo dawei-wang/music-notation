@@ -1,24 +1,23 @@
-import React, { useState } from "react";
+import React from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import { renderToSvg } from "abcjs";
 
 const COLORS = {
-  1: "#ff6666",
-  2: "#ff9966",
-  3: "#ffff66",
-  4: "#99ff99",
-  5: "#66b3ff",
-  6: "#d966ff",
+  1: "#1f77b4",
+  2: "#ff7f0e",
+  3: "#2ca02c",
+  4: "#d62728",
+  5: "#9467bd",
+  6: "#8c564b",
 };
 
 const song =
-  "c4 c4 g4 g4 a4 a4 g4 e4 e4 d4 d4 c4 g4 g4 f4 f4 e4 e4 d4 g4 g4 f4 f4 e4 e4 d4 c4 c4 g4 g4 a4 a4 g4 e4 e4 d4 d4 c4";
+  "C C G G A A G F F E E D D C G G F F E E D G G F F E E D C C G G A A G F F E E D D C";
 
 const underlinedNotes = song.split(" ").map((note) => {
-  const octave = note.charAt(note.length - 1);
+  const octave = parseInt(note[note.length - 1]);
   const color = COLORS[octave];
-  const letterNote = note.slice(0, -1);
+  const letterNote = octave ? note.slice(0, -1) : note;
   const underlinedNote = letterNote
     .split("")
     .map((c) => `${c}_`)
@@ -40,23 +39,19 @@ function downloadPdf() {
   });
 }
 
-function downloadAbc() {
-  const svgString = renderToSvg(song, {});
-  const blob = new Blob([svgString], { type: "image/svg+xml" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "twinkle_twinkle_little_star.abc";
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+function renderABC() {
+  const abcContent = `X:1\nT:Twinkle Twinkle Little Star\nM:4/4\nL:1/4\nK:C\n${song}`;
+  const url = `https://www.abcjs.net/abcjs-editor.html?soundFont=gm&midiParams=undefined&editArea=${encodeURIComponent(
+    abcContent
+  )}`;
+  window.open(url);
 }
 
 function App() {
   return (
     <div>
       <div id="pdf-content">
-        <h2>Twinkle, Twinkle, Little Star</h2>
+        <h2>Twinkle Twinkle Little Star</h2>
         {underlinedNotes.map(({ note, color }, i) => (
           <span key={i} style={{ color, textDecoration: "underline" }}>
             {note}{" "}
@@ -64,7 +59,7 @@ function App() {
         ))}
       </div>
       <button onClick={downloadPdf}>Download PDF</button>
-      <button onClick={downloadAbc}>Download ABC</button>
+      <button onClick={renderABC}>Render ABC Notation</button>
     </div>
   );
 }
