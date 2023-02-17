@@ -3,25 +3,28 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
 const COLORS = {
-  2: "#FBB4AE",
-  3: "#B3CDE3",
-  4: "#CCEBC5",
-  5: "#DECBE4",
-  6: "#FED9A6",
-  7: "#FFFFCC",
-  8: "#E5D8BD",
-  9: "#FDDAEC",
+  1: "#fdab9f",
+  2: "#fddda0",
+  3: "#fff3b3",
+  4: "#c2eabd",
+  5: "#a6c5e5",
+  6: "#cb99c9",
 };
 
 const song =
-  "e4 d4 c4 d4 e4 e4 e4 d4 d4 d4 e4 g4 g4 e4 d4 c4 d4 e4 e4 e4 e4 d4 d4 e4 d4 c4";
+  "d6 d6 d6 d5 d6 f6 a6 g5 d6 d6 d6 g6 f6 e6 d6 c6 b5 b5 c6 d6 e6 f6 g6 a6 g6 f6 e6 d6 b5 g5 d6 d6 d6 g6 f6 e6 d6 c6 b5 c6 d6 e6 f6 g6 a6 g6 f6 e6 d6 b5 g5";
 
-const coloredNotes = song.split(" ").map((note) => {
+const highlightedNotes = song.split(" ").map((note) => {
   const octave = note.charAt(note.length - 1);
   const color = COLORS[octave];
   const letterNote = note.slice(0, -1);
+  const underlinedNote = letterNote
+    .split("")
+    .map((c) => `${c}_`)
+    .join("");
+
   return {
-    note: letterNote,
+    note: underlinedNote.slice(0, -1),
     color,
   };
 });
@@ -32,7 +35,7 @@ function downloadPdf() {
     const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF("l", "pt", [canvas.width, canvas.height]);
     pdf.addImage(imgData, "PNG", 0, 0);
-    pdf.save("greensleeves.pdf");
+    pdf.save("doctor_who.pdf");
   });
 }
 
@@ -40,9 +43,9 @@ function App() {
   return (
     <div>
       <div id="pdf-content">
-        <h2>Greensleeves</h2>
-        {coloredNotes.map(({ note, color }, i) => (
-          <span key={i} style={{ color }}>
+        <h2>Doctor Who Theme Song</h2>
+        {highlightedNotes.map(({ note, color }, i) => (
+          <span key={i} style={{ color, textDecoration: "underline" }}>
             {note}{" "}
           </span>
         ))}
