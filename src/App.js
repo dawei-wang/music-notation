@@ -1,34 +1,47 @@
 import React from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import { schemeSet1 } from "d3-scale-chromatic";
 
 const COLORS = {
-  1: schemeSet1[0],
-  2: schemeSet1[1],
-  3: schemeSet1[2],
-  4: schemeSet1[3],
-  5: schemeSet1[4],
-  6: schemeSet1[5],
+  2: "#b7e4c7",
+  3: "#f6d743",
+  4: "#fc913a",
+  5: "#e7552c",
+  6: "#a1241e",
 };
 
 const song =
-  "G3 G3 G3 D4 G4 F#4 E4 D4 D4 D4 G4 G4 F#4 F#4 E4 E4 D4 G4 D4 G4 F#4 E4 D4";
+  "D5 G5 A5 G5 F#5 E5 D5 C#5 D5 F5 E5 D5 C#5 B4 D5 G4 D5 A4 G4 F#4 E4 D4 C#4 D4 F4 E4 D4 C#4 B3 D4 G3 D4 G4 A4 B4 A4 G4 F#4 G4 A4 B4 A4 G4 F#4 E4 D4 E4 F#4 G4 A4 G4 F#4 E4 D4 C#4 D4 E4 F#4 G4 F#4 E4 D4 C#4 B3";
 
-const underlinedNotes = song.split(" ").map((note) => {
-  const octave = note.charAt(note.length - 1);
-  const color = COLORS[octave];
-  const letterNote = note.slice(0, -1);
-  const underlinedNote = letterNote
-    .split("")
-    .map((c) => `${c}_`)
-    .join("");
+const notes = song.split(" ");
 
-  return {
-    note: underlinedNote.slice(0, -1),
-    color,
-  };
-});
+const createGrid = (notes) => {
+  let currentOctave = null;
+  const grid = [];
+
+  for (let i = 0; i < notes.length; i++) {
+    const note = notes[i];
+    const octave = parseInt(note.charAt(note.length - 1));
+
+    if (octave !== currentOctave) {
+      currentOctave = octave;
+      grid.push([]);
+    }
+
+    const letterNote = note.slice(0, -1);
+    const underlinedNote = letterNote
+      .split("")
+      .map((c) => `${c}_`)
+      .join("");
+
+    grid[grid.length - 1].push({
+      note: underlinedNote.slice(0, -1),
+      color: COLORS[octave],
+    });
+  }
+
+  return grid;
+};
 
 function downloadPdf() {
   const input = document.getElementById("pdf-content");
@@ -36,19 +49,32 @@ function downloadPdf() {
     const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF("l", "pt", [canvas.width, canvas.height]);
     pdf.addImage(imgData, "PNG", 0, 0);
-    pdf.save("the_planets_jupiter.pdf");
+    pdf.save("jupiter.pdf");
   });
 }
 
 function App() {
+  const grid = createGrid(notes);
+
   return (
     <div>
       <div id="pdf-content">
-        <h2>The Planets - Jupiter</h2>
-        {underlinedNotes.map(({ note, color }, i) => (
-          <span key={i} style={{ color, textDecoration: "underline" }}>
-            {note}{" "}
-          </span>
+        <h2>Gustav Holst - The Planets: Jupiter</h2>
+        {grid.map((row, i) => (
+          <div key={i} style={{ display: "flex", flexDirection: "row" }}>
+            {row.map(({ note, color }, j) => (
+              <span
+                key={j}
+                style={{
+                  color,
+                  textDecoration: "underline",
+                  marginRight: "5px",
+                }}
+              >
+                {note}{" "}
+              </span>
+            ))}
+          </div>
         ))}
       </div>
       <button onClick={downloadPdf}>Download PDF</button>
