@@ -3,24 +3,25 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
 const COLORS = {
-  4: "#FFB6C1",
-  5: "#F08080",
-  6: "#CD5C5C",
-  7: "#FFA07A",
-  8: "#FA8072",
-  9: "#E9967A",
+  3: "#FFB6C1",
+  4: "#F08080",
+  5: "#CD5C5C",
+  6: "#FFA07A",
+  7: "#FA8072",
+  8: "#E9967A",
 };
 
 const song =
-  "E4 E5 D5# E5 D5# B4 D5# B4 D5# E5 D5# C5# D5# C5# A4 D5# A4 D5# C5# D5# B4 D5#";
+  "E4 D#4 E4 D#4 E4 B3 D4 C#4 A3 C4 B3 A3 B3 C4 D4 B3 F#3 G#3 B3 A3 C4 B3 A3";
 
 const underlinedNotes = song.split(" ").map((note, i, notes) => {
   const octave = parseInt(note.charAt(note.length - 1));
   const color = COLORS[octave] || "#000000";
   const letterNote = note.slice(0, -1);
+  const isSharp = letterNote.includes("#");
   const underlinedNote = letterNote
     .split("")
-    .map((c) => `${c}_`)
+    .map((c) => `${c}${isSharp ? "_" : ""}`)
     .join("");
 
   const isLastNote = i === notes.length - 1;
@@ -31,7 +32,7 @@ const underlinedNotes = song.split(" ").map((note, i, notes) => {
     nextNoteOctave !== null && octave !== nextNoteOctave;
 
   return {
-    note: underlinedNote.slice(0, -1),
+    note: underlinedNote,
     color,
     shouldAddLineBreak,
   };
