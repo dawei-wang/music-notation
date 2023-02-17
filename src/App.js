@@ -3,18 +3,18 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
 const COLORS = {
-  2: "#FFB6C1",
-  3: "#F08080",
-  4: "#CD5C5C",
-  5: "#FFA07A",
-  6: "#FA8072",
-  7: "#E9967A",
+  4: "#FFB6C1",
+  5: "#F08080",
+  6: "#CD5C5C",
+  7: "#FFA07A",
+  8: "#FA8072",
+  9: "#E9967A",
 };
 
 const song =
-  "d3 c3 g3 c4 d4 e4 d4 c4 g3 c4 d4 e4 d4 c4 g3 c4 d4 c4 g3 c4 d4 e4 d4 c4 g3 c4 d4 c4 g3";
+  "E4 E5 D5# E5 D5# B4 D5# B4 D5# E5 D5# C5# D5# C5# A4 D5# A4 D5# C5# D5# B4 D5#";
 
-const underlinedNotes = song.split(" ").map((note) => {
+const underlinedNotes = song.split(" ").map((note, i, notes) => {
   const octave = parseInt(note.charAt(note.length - 1));
   const color = COLORS[octave] || "#000000";
   const letterNote = note.slice(0, -1);
@@ -23,9 +23,17 @@ const underlinedNotes = song.split(" ").map((note) => {
     .map((c) => `${c}_`)
     .join("");
 
+  const isLastNote = i === notes.length - 1;
+  const nextNoteOctave = isLastNote
+    ? null
+    : parseInt(notes[i + 1].charAt(notes[i + 1].length - 1));
+  const shouldAddLineBreak =
+    nextNoteOctave !== null && octave !== nextNoteOctave;
+
   return {
     note: underlinedNote.slice(0, -1),
     color,
+    shouldAddLineBreak,
   };
 });
 
@@ -40,35 +48,17 @@ function downloadPdf() {
 }
 
 function App() {
-  const noteGroups = [];
-  let lastOctave = 0;
-  let group = [];
-  for (let i = 0; i < underlinedNotes.length; i++) {
-    const { note, color } = underlinedNotes[i];
-    const octave = parseInt(note.charAt(note.length - 1));
-    if (octave !== lastOctave) {
-      noteGroups.push(group);
-      group = [{ note, color }];
-      lastOctave = octave;
-    } else {
-      group.push({ note, color });
-    }
-  }
-  noteGroups.push(group);
-
   return (
     <div>
       <div id="pdf-content">
         <h2>Nocturne by Secret Garden</h2>
-        {noteGroups.map((group, i) => (
-          <div key={i}>
-            {group.map(({ note, color }, j) => (
-              <span key={j} style={{ color, textDecoration: "underline" }}>
-                {note}{" "}
-              </span>
-            ))}
-          </div>
-        ))}
+        <div style={{ whiteSpace: "nowrap" }}>
+          {underlinedNotes.map(({ note, color, shouldAddLineBreak }, i) => (
+            <span key={i} style={{ color, textDecoration: "underline" }}>
+              {note} {shouldAddLineBreak && <br />}
+            </span>
+          ))}
+        </div>
       </div>
       <button onClick={downloadPdf}>Download PDF</button>
     </div>
