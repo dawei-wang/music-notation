@@ -44,25 +44,19 @@ const SONGS = [
   },
 ];
 
-const COLORS = {
-  1: "#FFB6C1",
-  2: "#F08080",
-  3: "#CD5C5C",
-  4: "#FFA07A",
-  5: "#FA8072",
-  6: "#E9967A",
-  7: "#BDB76B",
-  8: "#9ACD32",
-  9: "#6B8E23",
-  10: "#556B2F",
-  11: "#228B22",
-  12: "#008000",
-};
-
 function underlineNotes(notes) {
+  let octaveIndex = 0;
+  const octaves = {};
   return notes.split(" ").map((note, i, arr) => {
     const octave = parseInt(note.charAt(note.length - 1));
-    const color = COLORS[octave] || "#000000";
+    let octaveColor;
+    if (!octaves[octave]) {
+      octaves[octave] = octaveIndex;
+      octaveIndex++;
+    }
+    const hue = (octaves[octave] / Object.keys(octaves).length) * 360;
+    octaveColor = `hsl(${hue}, 90%, 60%)`;
+
     const letterNote = note.slice(0, -1);
     const isSharp = letterNote.includes("#");
     const underlinedNote = isSharp
@@ -78,7 +72,7 @@ function underlineNotes(notes) {
 
     return {
       note: underlinedNote,
-      color,
+      color: octaveColor,
       shouldAddLineBreak,
     };
   });
