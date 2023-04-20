@@ -2,6 +2,16 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Purpose
+
+This is a JavaScript application using the React library that renders a list of songs with underlined musical notes and allows the user to download a PDF version of the list. The code imports two external libraries: html2canvas and jsPDF.
+
+The list of songs is defined as an array of objects with two properties: name and notes. The underlineNotes function takes a string of notes and returns an array of objects where each object represents a note, its color, and whether a line break should be added after it. The color of each note is determined by its octave, and the hsl color palette is used. The downloadPdf function is called when the user clicks the "Download PDF" button, and it generates a PDF version of the list of songs using the html2canvas and jsPDF libraries.
+
+The App component renders the list of songs by mapping over the SONGS array and rendering each song name and its underlined notes using the underlineNotes function. The pdfContentRef is a reference to the div element containing the rendered list, which is used by the downloadPdf function to generate the PDF. Finally, a "Download PDF" button is rendered, which, when clicked, calls the downloadPdf function.
+
+This system was originally created to help people who have trouble reading sheet music enjoy playing their favorite songs on the piano. For more information, please visit my [Portfolio Website](https://daweiwang1.wordpress.com/portfolio/).
+
 ## Available Scripts
 
 In the project directory, you can run:
